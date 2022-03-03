@@ -1,0 +1,63 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ listing.title }}</h2>
+    <img src="{{ listing.image }}" style="width:300px;height:auto">
+    <p>{{ listing.description }}</p>
+    {% if listing.highest_bid is None%}
+        <h3>Starting Price: ${{ listing.starting_bid }}</h3>
+    {% else %}
+        <h3>Highest bid: ${{ listing.highest_bid.amount }}</h3>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <!-- check if current user is not the owner of listing and display bidding field and watchlist btn-->
+        {% if not user == listing.user and listing.is_active %}
+            <form method="post" autocomplete="off">
+                {% csrf_token %}
+                <input type="text" min="0" name="bid" placeholder="Bid">
+                {% if message %}
+                    <p>{{ message }}</p>
+                {% endif %}
+                <input type="submit" value="Place Bid" name="submit_bid">
+            </form>
+            {% if watchlist is None %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Add To Watchlist" name="submit_watchlist">
+                </form>
+            {% else %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Remove From Watchlist" name="submit_remove_watchlist">
+                </form>
+            {% endif %}
+        {% elif user == listing.winner %}
+            <h1>WINNER</h1>
+        <!-- if user is the owner of listing display close button -->
+        {% elif listing.is_active and user == listing.user %}
+            <form method="post">
+                {% csrf_token %}
+                <input type="submit" value="Close Listing" name="submit_close_listing">
+            </form>
+        {% endif %}
+    {% endif %}
+
+    <h3>All Bids:</h3>
+    {% for bid in bids %}
+        <h4>{{bid.amount}}</h4>
+    {% endfor %}
+    
+    {% for comment in comments %}
+    <p>{{ comment.comment }}</p>
+    {% empty %}
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="comment" placeholder="Comment">
+            <input type="submit" name="submit_comment" value="Post Comment">
+        </form>
+    {% endif %}
+{% endblock %}

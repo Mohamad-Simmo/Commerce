@@ -1,0 +1,27 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+    <h2>Watchlist</h2>
+    {% for list in watchlist %}
+        <div class="index-container">
+            <a href="/{{ list.listing.id }}">
+                <div class="listing-container">
+                    {% if list.listing.image %}
+                        <img  class="listing-item" src="{{ list.listing.image }}">
+                    {% else %}
+                        <img  class="listing-item" src="https://www.unfe.org/wp-content/uploads/2019/04/SM-placeholder-1024x512.png">
+                    {% endif %}
+                    <div>
+                        <h3 class="listing-item">{{ list.listing.title }}</h3>
+                        <p class="listing-item">{{ list.listing.description }}</p>
+                        {% if list.listing.highest_bid is None %}
+                            <p class="listing-item">Starting bid: ${{ list.listing.starting_bid }}</p>
+                        {% else %}
+                            <p class="listing-item">Highest bid: ${{ list.listing.highest_bid.amount }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% endfor %}
+{% endblock %}
