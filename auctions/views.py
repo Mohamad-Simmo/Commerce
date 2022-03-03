@@ -123,16 +123,20 @@ def listing_view(request, listing_id):
     current_listing = Listing.objects.get(id=listing_id)
     bids = current_listing.bids.all()
     comments = Comment.objects.filter(listing=current_listing)
+
+    # Check if listing is in watchlist
     try:
         watchlist = Watchlist.objects.get(listing=current_listing)
     except Watchlist.DoesNotExist:
         watchlist = None
 
-    if request.method == 'POST' and 'submit_bid' in request.POST:
-        try:
-            new_bid_amount = float(request.POST["bid"])
-        except ValueError:
-            return HttpResponseRedirect(reverse('listing', args=(current_listing.id,)))
+
+    if request.method == 'POST':
+        if 'submit_bid' in request.POST:
+            try:
+                new_bid_amount = float(request.POST["bid"])
+            except ValueError:
+                return HttpResponseRedirect(reverse('listing', args=(current_listing.id,)))
 
         if new_bid_amount >= float(current_listing.starting_bid):
             if current_listing.highest_bid is None or float(current_listing.highest_bid.amount) < new_bid_amount:
@@ -153,6 +157,7 @@ def listing_view(request, listing_id):
                 "bids": bids,
                 "message": "Your bid should be greater than the highest bid"
             })
+
 
     elif request.method == 'POST' and 'submit_watchlist' in request.POST:
         Watchlist.objects.create(user=request.user, listing=current_listing)
