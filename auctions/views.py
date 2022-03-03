@@ -82,7 +82,6 @@ def create_listing(request):
                 #  Get category if it exists
                 category = category.capitalize()
                 category = Category.objects.get(name=category)
-
             except:
                 # Create new category
                 Category.objects.create(name=category.capitalize())
@@ -90,20 +89,35 @@ def create_listing(request):
             # User did not input a category
             category = None
 
+
         try:
             # Create new listing object
-            Listing.objects.create(title=title, description=description, image=image, 
-            starting_bid=starting_bid, is_active=is_active, category=category, user=request.user)
-        
+            Listing.objects.create (
+                title=title,
+                description=description,
+                image=image, 
+                starting_bid=starting_bid,
+                is_active=is_active, 
+                category=category,
+                user=request.user
+            )
+
         except:
-            #Invalid inputs
-            #Todo
-            pass
+            # Invalid inputs
+            return render(request, "auctions/create_listing.html", {
+                "categories": Category.objects.all(),
+                "message": "Invalid input"
+            })
+
+        # Listing created successfully
         return HttpResponseRedirect(reverse("index"))
 
+
+    # request.method == 'GET'
     return render(request, "auctions/create_listing.html", {
         "categories": Category.objects.all()
     })
+
 
 def listing_view(request, listing_id):
     current_listing = Listing.objects.get(id=listing_id)

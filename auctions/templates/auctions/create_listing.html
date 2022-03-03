@@ -5,10 +5,10 @@
     <form autocomplete="off" method="post">
         {% csrf_token %}
         <div class="form-container">
-            <input class="form-item" type="text" placeholder="Title" name="title">
-            <textarea class="form-item"  name="description" placeholder="Description" rows="8" cols="40"></textarea>
+            <input class="form-item" type="text" placeholder="Title" name="title" required>
+            <textarea class="form-item"  name="description" placeholder="Description" rows="8" cols="40" required></textarea>
             <input class="form-item"  type="text" placeholder="Image URL" name="image_url">
-            <input class="form-item"  type="number" min="0" placeholder="Starting Bid ($)" name="starting_bid">
+            <input class="form-item"  type="number" min="0" placeholder="Starting Bid ($)" name="starting_bid" required>
             <input class="form-item" type="text" list="categories" name="category" placeholder="Category" autocapitalize="true">
             <datalist id="categories">
                 {% for category in categories %}
@@ -17,6 +17,9 @@
                 {% endfor %}
             </datalist>
             <input type="submit">
+            {% if message %}
+                <p>{{ message }}</p>
+            {% endif %}
         </div>
     </form>
 {% endblock %}
