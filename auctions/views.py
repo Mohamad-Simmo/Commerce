@@ -133,53 +133,82 @@ def listing_view(request, listing_id):
 
     if request.method == 'POST':
         if 'submit_bid' in request.POST:
+
+            # Check bid
             try:
                 new_bid_amount = float(request.POST["bid"])
             except ValueError:
-                return HttpResponseRedirect(reverse('listing', args=(current_listing.id,)))
+                return render(request, "auctions/listing.html", {
+                    "listing": current_listing,
+                    "bids": bids,
+                    "message": "Invalid bid amount"
+                })
 
-        if new_bid_amount >= float(current_listing.starting_bid):
-            if current_listing.highest_bid is None or float(current_listing.highest_bid.amount) < new_bid_amount:
-                new_bid_object = Bid.objects.create(user=request.user, amount=new_bid_amount)
-                current_listing.highest_bid = new_bid_object
-                current_listing.bids.add(new_bid_object)
-                current_listing.save()
-                return HttpResponseRedirect(reverse('listing', args=(current_listing.id,)))
+            # New bid > start price
+            if new_bid_amount >= float(current_listing.starting_bid):
+
+                # New bid > highest bid
+                if current_listing.highest_bid is None or float(current_listing.highest_bid.amount) < new_bid_amount:
+                    
+                    # Add new bid to listing
+                    new_bid_object = Bid.objects.create(user=request.user, amount=new_bid_amount)
+                    current_listing.highest_bid = new_bid_object
+                    current_listing.bids.add(new_bid_object)
+                    current_listing.save()
+
+                    return HttpResponseRedirect(reverse('listing', args=(current_listing.id,)))
+
+                # New bid < highest bid  
+                else:
+                    return render(request, "auctions/listing.html", {
+                        "listing": current_listing,
+                        "bids": bids,
+                        "message": "Your bid should be equal to or greater than the starting price"
+                    })
+
+            # New bid < start price
             else:
                 return render(request, "auctions/listing.html", {
                     "listing": current_listing,
                     "bids": bids,
-                    "message": "Your bid should be equal to or greater than the starting price"
+                    "message": "Your bid should be greater than the highest bid"
                 })
-        else:
-            return render(request, "auctions/listing.html", {
-                "listing": current_listing,
-                "bids": bids,
-                "message": "Your bid should be greater than the highest bid"
-            })
+
+        elif 'submit_watchlist' in request.POST:
+
+            # Add listing to watchlist
+            Watchlist.objects.create(user=request.user, listing=current_listing)
+
+            return HttpResponseRedirect(reverse('listing', args=(current_listing.id,)))
+
+        elif 'submit_remove_watchlist' in request.POST:
+
+            # Remove listing from watchlist
+            Watchlist.objects.get(listing=current_listing).delete()
+
+            return HttpResponseRedirect(reverse('listing', args=(current_listing.id,)))
+
+        elif 'submit_close_listing' in request.POST:
+
+            # Close listing and pick the winner
+            current_listing.is_active = False
+            if not current_listing.highest_bid is None:
+                current_listing.winner = current_listing.highest_bid.user
+            current_listing.save()
+
+            return HttpResponseRedirect(reverse('listing', args=(current_listing.id,)))
+
+        elif 'submit_comment' in request.POST:
+            comment = request.POST["comment"]
+
+            if len(strip(comment)) > 0:
+                # Add new comment to listing
+                Comment.objects.create(user=request.user, listing=current_listing, comment=comment)
+
+            return HttpResponseRedirect(reverse('listing', args=(current_listing.id,)))
 
 
-    elif request.method == 'POST' and 'submit_watchlist' in request.POST:
-        Watchlist.objects.create(user=request.user, listing=current_listing)
-        return HttpResponseRedirect(reverse('listing', args=(current_listing.id,)))
-
-    elif request.method == 'POST' and 'submit_remove_watchlist' in request.POST:
-        Watchlist.objects.get(listing=current_listing).delete()
-        return HttpResponseRedirect(reverse('listing', args=(current_listing.id,)))
-
-    elif request.method == 'POST' and 'submit_close_listing' in request.POST:
-        current_listing.is_active = False
-        if not current_listing.highest_bid is None:
-            current_listing.winner = current_listing.highest_bid.user
-        current_listing.save()
-
-        return HttpResponseRedirect(reverse('listing', args=(current_listing.id,)))
-
-    elif request.method == 'POST' and 'submit_comment' in request.POST:
-        Comment.objects.create(user=request.user, listing=current_listing, comment=request.POST["comment"])
-        return HttpResponseRedirect(reverse('listing', args=(current_listing.id,)))
-
-
+    # request.method == 'Get'
     return render(request, "auctions/listing.html", {
         "listing": current_listing,
         "bids": bids,
