@@ -1,53 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
+
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
-    padding: 10px;
 }
 
 h2 {
     margin-bottom: 10px;
+    font-size: 28px;
 }
 
-.form-container {
+/* NAVBAR */
+nav {
+    background: #1E1E24;
+}
+
+.nav-container {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    padding: 10px;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.nav-user {
+    font-size: small;
+    font-weight:400;
+    margin-left: 5px;
+}
+
+.nav-container li {
+    list-style: none;
+}
+
+.nav-container li.nav-item {
+    padding: 10px;
+    font-weight: bold;
+    height:100%;
+}
+
+.nav-container li.nav-item {
+    padding: 10px;
+    font-weight: bold;
+    height:100%;
+    margin-right: 5px;
+}
+
+.nav-container li.nav-item a:hover {
+    transition: 0.5s;
+    color:#fba089ce;
+}
+
+.nav-container li:nth-child(1) {
     margin: 0;
-    padding: 0;
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    margin-right: auto;
 }
 
-.form-item {
-    margin-bottom: 10px;
-    width: 100%;
-    padding: 6px;
+a {
+    text-decoration: none;
+    color: #FB9F89;
 }
 
-.index-container {
-    display: block;
+.page-container {
+    margin: 20px;
 }
 
 .listing-container {
     display: flex;
-    flex-direction: row;
-    margin: 20px 0;
-    border: 1px solid rgba(0, 0, 0, 0.301);
-    padding: 10px;
+    color: black;
+    margin-bottom: 20px;
+    border: 1px solid black;
+    background-color: #81AE9D;
+    
 }
 
-.listing-container img {
+img.listing-item {
     width: 300px;
     height: auto;
+    margin-right: 15px;
 }
 
-.listing-container h3,p {
-    margin-left: 10px;
+.listing-text-container{
+    display: flex;
+    flex-direction: column;
 }
 
-.index-container a {
-    color: black;
-    text-decoration: none;
+.listing-text-container .listing-item:nth-child(3) {
+    margin-top: auto;
 }
