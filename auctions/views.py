@@ -84,7 +84,7 @@ def create_listing(request):
                 category = Category.objects.get(name=category)
             except:
                 # Create new category
-                Category.objects.create(name=category.capitalize())
+                category = Category.objects.create(name=category.capitalize())
         else:
             # User did not input a category
             category = None
@@ -201,7 +201,7 @@ def listing_view(request, listing_id):
         elif 'submit_comment' in request.POST:
             comment = request.POST["comment"]
 
-            if len(strip(comment)) > 0:
+            if len(comment.strip()) > 0:
                 # Add new comment to listing
                 Comment.objects.create(user=request.user, listing=current_listing, comment=comment)
 
@@ -223,11 +223,13 @@ def watchlist(request):
         "watchlist": watchlist
     })
 
+
 def categories_view(request):
     categories = Category.objects.all()
     return render(request, "auctions/categories.html", {
         "categories": categories
     })
+
 
 def category(request, category_name):
     listings = Listing.objects.filter(category=Category.objects.get(name=category_name))
