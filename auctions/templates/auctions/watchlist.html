@@ -1,27 +1,29 @@
 {% extends 'auctions/layout.html' %}
 
 {% block body %}
-    <h2>Watchlist</h2>
-    {% for list in watchlist %}
-        <div class="index-container">
-            <a href="/{{ list.listing.id }}">
-                <div class="listing-container">
-                    {% if list.listing.image %}
-                        <img  class="listing-item" src="{{ list.listing.image }}">
-                    {% else %}
-                        <img  class="listing-item" src="https://www.unfe.org/wp-content/uploads/2019/04/SM-placeholder-1024x512.png">
-                    {% endif %}
-                    <div>
-                        <h3 class="listing-item">{{ list.listing.title }}</h3>
-                        <p class="listing-item">{{ list.listing.description }}</p>
-                        {% if list.listing.highest_bid is None %}
-                            <p class="listing-item">Starting bid: ${{ list.listing.starting_bid }}</p>
+    <div class="page-container">
+        <h2>Watchlist</h2>
+        {% for list in watchlist %}
+            <div class="index-container">
+                <a href="/{{ list.listing.id }}">
+                    <div class="listing-container">
+                        {% if list.listing.image %}
+                            <img  class="listing-item" src="{{ list.listing.image }}">
                         {% else %}
-                            <p class="listing-item">Highest bid: ${{ list.listing.highest_bid.amount }}</p>
+                            <img  class="listing-item" src="https://www.unfe.org/wp-content/uploads/2019/04/SM-placeholder-1024x512.png">
                         {% endif %}
+                        <div class="listing-text-container">
+                            <h3 class="listing-item">{{ list.listing.title }}</h3>
+                            <p class="listing-item">{{ list.listing.description }}</p>
+                            {% if list.listing.highest_bid is None %}
+                                <p class="listing-item">Starting price: <strong>${{ list.listing.starting_bid }}</strong></p>
+                            {% else %}
+                                <p class="listing-item">Highest bid: <strong>${{ list.listing.highest_bid.amount }}</strong></p>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
-    {% endfor %}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

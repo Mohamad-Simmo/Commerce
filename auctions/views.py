@@ -232,7 +232,9 @@ def categories_view(request):
 
 
 def category(request, category_name):
+    cat = category_name
     listings = Listing.objects.filter(category=Category.objects.get(name=category_name))
     return render(request, "auctions/category.html", {
-        "listings": listings
+        "listings": listings,
+        "cat": cat
     })

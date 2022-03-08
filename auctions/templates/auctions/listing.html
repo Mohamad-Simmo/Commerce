@@ -9,7 +9,10 @@
                     {% csrf_token %}
                     <input type="submit" value="Close Listing" name="submit_close_listing">
                 </form>
+                {% elif user == listing.winner %}
+                    <h2 style="color: rgb(91, 194, 91);">You Won This Listing!</h2>
             {% endif %}
+
         </div>
 
         <hr>
@@ -49,21 +52,18 @@
                                 <input type="submit" value="Remove From Watchlist" name="submit_remove_watchlist">
                             </form>
                         {% endif %}
-                    {% elif user == listing.winner %}
-                        <h1>WINNER</h1>
-                    <!-- if user is the owner of listing display close button -->
-                    {% endif %}
                 {% endif %}
                 {% if bids %}
                     <h3>All Bids:</h3>
                     {% for bid in bids %}
-                        <h4>{{bid.amount}}</h4>
+                        <h4>{{bid.user}}: ${{bid.amount}}</h4>
                     {% endfor %}
+                {% endif %}
                 {% endif %}
             
             </div>
         </div>
-        <h2>Comments: </h2>
+        <h2>Comments</h2>
         <hr>
         <div class="comments-container">
         {% for comment in comments %}
@@ -72,7 +72,7 @@
         {% endfor %}
         </div>
         {% if user.is_authenticated %}
-            <form method="post" autocomplete="off">
+            <form class="comment-form" method="post" autocomplete="off">
                 {% csrf_token %}
                 <div class="input-container">
                     <input type="text" name="comment" placeholder="Comment">

@@ -173,13 +173,22 @@ form {
     gap: 10px;
 }
 
-form input[type="text"] {
+form input {
     width: 100%;
     padding: 8px 24px;
 }
 
-form input[type="text"]:focus {
+form input:focus {
     outline-color: #FB9F89;
+}
+
+.comment-form {
+    flex-direction: row;
+    align-items: center;
+}
+
+.input-container {
+    flex: 1;
 }
 
 .comments-container {
@@ -187,4 +196,31 @@ form input[type="text"]:focus {
     gap: 20px;
     flex-direction: column;
     margin-bottom: 20px;
+}
+
+.login-register-container {
+    width: 30%;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid #1E1E24;
+    padding: 20px;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    gap: 15px;
+    margin: 0 auto;
+}
+
+textarea {
+    padding: 8px 24px;
+    resize: none;
+}
+
+textarea:focus {
+    outline-color: #FB9F89;
 }
